@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Categories | ShopSmart</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        rel="stylesheet">
+
+</head>
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a href="{{ url_for('home') }}"
+           class="logo">
+
+            🛍️ <span>ShopSmart</span>
+
+        </a>
+
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{{ url_for('home') }}">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('products') }}">
+                    Products
+                </a>
+            </li>
+
+            <li>
+                <a class="active"
+                   href="{{ url_for('categories') }}">
+                    Categories
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('home') }}#about">
+                    About
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('home') }}#contact">
+                    Contact
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="page-hero">
+
+    <span>
+        SHOP BY CATEGORY
+    </span>
+
+    <h1>
+        Explore Categories
+    </h1>
+
+    <p>
+        Browse products by category and find exactly
+        what you need.
+    </p>
+
+</section>
+
+
+<!-- ================= CATEGORY CARDS ================= -->
+
+<section class="category-grid">
+
+    {% for category in categories %}
+
+    <a
+        href="{{ url_for('category', category_name=category) }}"
+        class="category-card"
+    >
+
+        <div class="category-icon">
+
+            {% if category == "Accessories" %}
+
+                🖱️
+
+            {% elif category == "Gaming" %}
+
+                🎮
+
+            {% elif category == "Audio" %}
+
+                🎧
+
+            {% elif category == "Storage" %}
+
+                💾
+
+            {% elif category == "Electronics" %}
+
+                ⚡
+
+            {% elif category == "Wearables" %}
+
+                ⌚
+
+            {% else %}
+
+                🛍️
+
+            {% endif %}
+
+        </div>
+
+
+        <h2>
+            {{ category }}
+        </h2>
+
+
+        <p>
+            {{ category_counts[category] }}
+            {% if category_counts[category] == 1 %}
+                Product
+            {% else %}
+                Products
+            {% endif %}
+        </p>
+
+
+        <div class="category-action">
+
+            Explore Category
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+        </div>
+
+    </a>
+
+    {% endfor %}
+
+</section>
+
+
+<!-- ================= SUMMARY ================= -->
+
+<section class="about-section">
+
+    <div class="section-heading">
+
+        <span>
+            SHOPSMART
+        </span>
+
+        <h2>
+            Everything Organized
+        </h2>
+
+        <p>
+            Find products faster with our category-based
+            shopping experience.
+        </p>
+
+    </div>
+
+
+    <div class="about-content">
+
+
+        <div class="about-card">
+
+            <i class="fa-solid fa-layer-group"></i>
+
+            <h3>
+                Organized Products
+            </h3>
+
+            <p>
+                Products are grouped into meaningful
+                categories for easier browsing.
+            </p>
+
+        </div>
+
+
+        <div class="about-card">
+
+            <i class="fa-solid fa-filter"></i>
+
+            <h3>
+                Easy Filtering
+            </h3>
+
+            <p>
+                Open a category and immediately see
+                only the relevant products.
+            </p>
+
+        </div>
+
+
+        <div class="about-card">
+
+            <i class="fa-solid fa-brain"></i>
+
+            <h3>
+                AI Recommendations
+            </h3>
+
+            <p>
+                Search any product and discover
+                similar products using Machine Learning.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <div class="footer-container">
+
+
+        <div class="footer-brand">
+
+            <div class="logo">
+                🛍️ <span>ShopSmart</span>
+            </div>
+
+            <p>
+                AI Powered Product Recommendation System
+                built using Flask, Machine Learning and Python.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="{{ url_for('home') }}">
+                Home
+            </a>
+
+            <a href="{{ url_for('products') }}">
+                Products
+            </a>
+
+            <a href="{{ url_for('categories') }}">
+                Categories
+            </a>
+
+            <a href="{{ url_for('home') }}#about">
+                About
+            </a>
+
+            <a href="{{ url_for('home') }}#contact">
+                Contact
+            </a>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>
+                Categories
+            </h3>
+
+            {% for category in categories %}
+
+            <a href="{{ url_for('category', category_name=category) }}">
+                {{ category }}
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>
+                Contact
+            </h3>
+
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                Bangalore, India
+            </p>
+
+            <p>
+                <i class="fa-solid fa-phone"></i>
+                +91 7483795008
+            </p>
+
+            <p>
+                <i class="fa-solid fa-envelope"></i>
+                priyankapriI82@gmail.com
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 ShopSmart |
+            AI Product Recommendation System |
+            Flask & Machine Learning
+        </p>
+
+    </div>
+
+</footer>
+
+
+</body>
+</html>

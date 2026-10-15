@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Buy {{ product.name }} | ShopSmart</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            🛍️ <span>ShopSmart</span>
+        </a>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{{ url_for('home') }}">Home</a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('products') }}">Products</a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('categories') }}">Categories</a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</header>
+
+
+<section class="buy-page">
+
+    <div class="buy-card">
+
+        <div class="buy-success-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+
+        <h1>
+            Ready to Buy!
+        </h1>
+
+        <p class="buy-subtitle">
+            You selected the following product:
+        </p>
+
+        <div class="buy-product">
+
+            <div class="buy-image">
+
+                <img
+                    src="{{ url_for('static', filename='images/' + product.image) }}"
+                    alt="{{ product.name }}"
+                >
+
+            </div>
+
+            <div class="buy-info">
+
+                <span class="product-category">
+                    {{ product.category }}
+                </span>
+
+                <h2>
+                    {{ product.name }}
+                </h2>
+
+                <div class="rating">
+                    ⭐ {{ product.rating }}/5
+                </div>
+
+                <p>
+                    {{ product.description }}
+                </p>
+
+                <div class="buy-price">
+                    ₹{{ "%.0f"|format(product.price) }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="order-box">
+
+            <div>
+                <i class="fa-solid fa-truck-fast"></i>
+
+                <span>
+                    Fast Delivery
+                </span>
+            </div>
+
+            <div>
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <span>
+                    Secure Checkout
+                </span>
+            </div>
+
+            <div>
+                <i class="fa-solid fa-rotate-left"></i>
+
+                <span>
+                    Easy Returns
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="buy-actions">
+
+            <button
+                type="button"
+                class="confirm-buy"
+                onclick="confirmOrder()"
+            >
+                <i class="fa-solid fa-cart-shopping"></i>
+                Confirm Order
+            </button>
+
+            <a
+                href="{{ url_for('product_details', product_name=product.name) }}"
+                class="secondary-button"
+            >
+                Back to Product
+            </a>
+
+            <a
+                href="{{ url_for('home') }}"
+                class="secondary-button"
+            >
+                Continue Shopping
+            </a>
+
+        </div>
+
+
+        <p class="demo-message" id="orderMessage"></p>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 ShopSmart |
+            AI Product Recommendation System
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+function confirmOrder() {
+
+    const message = document.getElementById("orderMessage");
+
+    message.textContent =
+        "✅ Order placed successfully! This is a demo checkout.";
+
+}
+
+</script>
+
+</body>
+</html>

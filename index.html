@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ShopSmart | AI Product Recommendation</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          rel="stylesheet">
+
+
+    <!-- AUTOCOMPLETE STYLE -->
+
+    <style>
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .autocomplete-results {
+            display: none;
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            z-index: 9999;
+            text-align: left;
+        }
+
+        .autocomplete-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eeeeee;
+            transition: 0.2s;
+        }
+
+        .autocomplete-item:hover {
+            background: #f5f3ff;
+        }
+
+        .autocomplete-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f7f7f7;
+        }
+
+        .autocomplete-info {
+            flex: 1;
+        }
+
+        .autocomplete-info strong {
+            display: block;
+            font-size: 14px;
+            color: #222;
+        }
+
+        .autocomplete-info span {
+            display: block;
+            font-size: 12px;
+            color: #777;
+            margin-top: 3px;
+        }
+
+        .autocomplete-price {
+            font-weight: 600;
+            color: #6c2cff;
+            font-size: 14px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            🛍️ <span>ShopSmart</span>
+        </a>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{{ url_for('home') }}">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('products') }}">
+                    Products
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('categories') }}">
+                    Categories
+                </a>
+            </li>
+
+            <li>
+                <a href="#about">
+                    About
+                </a>
+            </li>
+
+            <li>
+                <a href="#contact">
+                    Contact
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero" id="home">
+
+    <div class="hero-content">
+
+        <span class="hero-label">
+            ✨ SMART SHOPPING WITH AI
+        </span>
+
+
+        <h1>
+            AI Powered Product
+            <br>
+            Recommendation System
+        </h1>
+
+
+        <p>
+            Discover similar products instantly using
+            Machine Learning. Search your favourite products
+            and receive intelligent recommendations.
+        </p>
+
+
+        <!-- ================= SEARCH ================= -->
+
+        <div class="search-container">
+
+            <form
+                action="{{ url_for('home') }}"
+                method="POST"
+                class="search-box"
+            >
+
+                <input
+                    type="text"
+                    name="product"
+                    id="productSearch"
+                    value="{{ searched_product }}"
+                    placeholder="Search Product..."
+                    autocomplete="off"
+                    required
+                >
+
+
+                <button type="submit">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    Recommend
+
+                </button>
+
+            </form>
+
+
+            <!-- AUTOCOMPLETE RESULTS -->
+
+            <div
+                id="autocomplete-results"
+                class="autocomplete-results"
+            ></div>
+
+        </div>
+
+
+        {% if message %}
+
+        <div class="message">
+            {{ message }}
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= MATCHED PRODUCT ================= -->
+
+{% if matched_product %}
+
+<section class="results-section">
+
+    <div class="section-heading">
+
+        <span>
+            SEARCH RESULT
+        </span>
+
+        <h2>
+            {{ matched_product.name }}
+        </h2>
+
+        <p>
+            We found this product for you
+        </p>
+
+    </div>
+
+
+    <div class="single-product">
+
+        <div class="big-product-image">
+
+            <img
+                src="{{ url_for('static', filename='images/' + matched_product.image) }}"
+                alt="{{ matched_product.name }}"
+            >
+
+        </div>
+
+
+        <div class="big-product-info">
+
+            <span class="product-category">
+                {{ matched_product.category }}
+            </span>
+
+            <h2>
+                {{ matched_product.name }}
+            </h2>
+
+            <div class="rating">
+                ⭐ {{ matched_product.rating }}/5
+            </div>
+
+            <p>
+                {{ matched_product.description }}
+            </p>
+
+            <h3>
+                ₹{{ "%.0f"|format(matched_product.price) }}
+            </h3>
+
+
+            <a
+                href="{{ url_for('product_details', product_name=matched_product.name) }}"
+                class="primary-button"
+            >
+                View Product
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+
+<!-- ================= RECOMMENDATIONS ================= -->
+
+{% if recommendations %}
+
+<section class="recommendation-section">
+
+    <div class="section-heading">
+
+        <span>
+            AI RECOMMENDATIONS
+        </span>
+
+        <h2>
+            You May Also Like
+        </h2>
+
+        <p>
+            Products selected using Machine Learning similarity
+        </p>
+
+    </div>
+
+
+    <div class="product-grid">
+
+        {% for item in recommendations %}
+
+        <div class="product-card">
+
+            <div class="product-image">
+
+                <img
+                    src="{{ url_for('static', filename='images/' + item.image) }}"
+                    alt="{{ item.name }}"
+                >
+
+            </div>
+
+
+            <div class="product-info">
+
+                <span class="product-category">
+                    {{ item.category }}
+                </span>
+
+
+                <h3>
+                    {{ item.name }}
+                </h3>
+
+
+                <div class="rating">
+                    ⭐ {{ item.rating }}/5
+                </div>
+
+
+                {% if item.similarity is defined %}
+
+                <p class="similarity">
+                    AI Similarity: {{ item.similarity }}%
+                </p>
+
+                {% endif %}
+
+
+                <div class="product-bottom">
+
+                    <strong>
+                        ₹{{ "%.0f"|format(item.price) }}
+                    </strong>
+
+
+                    <a
+                        href="{{ url_for('product_details', product_name=item.name) }}"
+                        class="details-button"
+                    >
+                        View Details
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+
+<!-- ================= FEATURES ================= -->
+
+<section class="features">
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            🤖
+        </div>
+
+        <h3>
+            AI Recommendation
+        </h3>
+
+        <p>
+            Uses Machine Learning to recommend
+            products based on similarity.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            ⚡
+        </div>
+
+        <h3>
+            Fast Search
+        </h3>
+
+        <p>
+            Get intelligent product recommendations
+            within seconds.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            🛒
+        </div>
+
+        <h3>
+            Smart Shopping
+        </h3>
+
+        <p>
+            Find products easily and discover
+            products you may like.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= PRODUCTS ================= -->
+
+<section class="products-section" id="products">
+
+    <div class="section-heading">
+
+        <span>
+            EXPLORE
+        </span>
+
+        <h2>
+            Trending Products
+        </h2>
+
+        <p>
+            Discover our popular products
+        </p>
+
+    </div>
+
+
+    <div class="product-grid">
+
+        {% for product in products %}
+
+        <div class="product-card">
+
+            <div class="product-image">
+
+                <img
+                    src="{{ url_for('static', filename='images/' + product.image) }}"
+                    alt="{{ product.name }}"
+                >
+
+            </div>
+
+
+            <div class="product-info">
+
+                <span class="product-category">
+                    {{ product.category }}
+                </span>
+
+
+                <h3>
+                    {{ product.name }}
+                </h3>
+
+
+                <div class="rating">
+                    ⭐ {{ product.rating }}/5
+                </div>
+
+
+                <div class="product-bottom">
+
+                    <strong>
+                        ₹{{ "%.0f"|format(product.price) }}
+                    </strong>
+
+
+                    <a
+                        href="{{ url_for('product_details', product_name=product.name) }}"
+                        class="details-button"
+                    >
+                        View Details
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <div class="center-button">
+
+        <a
+            href="{{ url_for('products') }}"
+            class="primary-button"
+        >
+            View All Products
+        </a>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= STATS ================= -->
+
+<section class="stats">
+
+    <div class="stat-card">
+
+        <h2>
+            {{ products|length }}+
+        </h2>
+
+        <p>
+            Products
+        </p>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <h2>
+            {{ categories|length }}+
+        </h2>
+
+        <p>
+            Categories
+        </p>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <h2>
+            100+
+        </h2>
+
+        <p>
+            Happy Users
+        </p>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <h2>
+            95%
+        </h2>
+
+        <p>
+            Accuracy
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= ABOUT ================= -->
+
+<section class="about-section" id="about">
+
+    <div class="section-heading">
+
+        <span>
+            ABOUT US
+        </span>
+
+        <h2>
+            Smart Shopping With AI
+        </h2>
+
+        <p>
+            ShopSmart uses Machine Learning to help users
+            discover products that match their interests.
+        </p>
+
+    </div>
+
+
+    <div class="about-content">
+
+        <div class="about-card">
+
+            <i class="fa-solid fa-robot"></i>
+
+            <h3>
+                AI Powered
+            </h3>
+
+            <p>
+                Intelligent product recommendations
+                using Machine Learning.
+            </p>
+
+        </div>
+
+
+        <div class="about-card">
+
+            <i class="fa-solid fa-bolt"></i>
+
+            <h3>
+                Fast & Simple
+            </h3>
+
+            <p>
+                Quickly search products and find
+                similar products.
+            </p>
+
+        </div>
+
+
+        <div class="about-card">
+
+            <i class="fa-solid fa-heart"></i>
+
+            <h3>
+                Better Shopping
+            </h3>
+
+            <p>
+                Discover products you may love
+                while shopping online.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= REVIEWS ================= -->
+
+<section class="reviews-section">
+
+    <div class="section-heading">
+
+        <span>
+            TESTIMONIALS
+        </span>
+
+        <h2>
+            Customer Reviews
+        </h2>
+
+        <p>
+            What our customers say about ShopSmart
+        </p>
+
+    </div>
+
+
+    <div class="reviews-grid">
+
+        <div class="review-card">
+            <div class="review-stars">⭐⭐⭐⭐⭐</div>
+            <p>
+                Amazing recommendation system.
+                Very fast and accurate.
+            </p>
+            <h4>- Rahul</h4>
+        </div>
+
+
+        <div class="review-card">
+            <div class="review-stars">⭐⭐⭐⭐⭐</div>
+            <p>
+                Beautiful interface and very easy to use.
+            </p>
+            <h4>- Priya</h4>
+        </div>
+
+
+        <div class="review-card">
+            <div class="review-stars">⭐⭐⭐⭐⭐</div>
+            <p>
+                Looks like a real shopping website.
+            </p>
+            <h4>- Sneha</h4>
+        </div>
+
+
+        <div class="review-card">
+            <div class="review-stars">⭐⭐⭐⭐⭐</div>
+            <p>
+                The product recommendations are
+                quick and useful.
+            </p>
+            <h4>- Arjun</h4>
+        </div>
+
+
+        <div class="review-card">
+            <div class="review-stars">⭐⭐⭐⭐⭐</div>
+            <p>
+                Simple design and the search feature
+                works really well.
+            </p>
+            <h4>- Ananya</h4>
+        </div>
+
+
+        <div class="review-card">
+            <div class="review-stars">⭐⭐⭐⭐⭐</div>
+            <p>
+                A great example of using AI for
+                smart online shopping.
+            </p>
+            <h4>- Kiran</h4>
+        </div>
+
+
+        <div class="review-card">
+            <div class="review-stars">⭐⭐⭐⭐⭐</div>
+            <p>
+                Finding similar products became
+                much easier with ShopSmart.
+            </p>
+            <h4>- Meera</h4>
+        </div>
+
+
+        <div class="review-card">
+            <div class="review-stars">⭐⭐⭐⭐⭐</div>
+            <p>
+                The website is clean, modern and
+                simple to navigate.
+            </p>
+            <h4>- Rohit</h4>
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= SUBSCRIBE ================= -->
+
+<section class="subscribe-section">
+
+    <div class="subscribe-content">
+
+        <h2>
+            Subscribe for Updates
+        </h2>
+
+        <p>
+            Get the latest product recommendations
+            directly in your inbox.
+        </p>
+
+
+        <form
+            class="subscribe-form"
+            onsubmit="subscribeUser(event)"
+        >
+
+            <input
+                type="email"
+                id="emailInput"
+                placeholder="Enter your Email"
+                required
+            >
+
+
+            <button type="submit">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                Subscribe
+
+            </button>
+
+        </form>
+
+
+        <p
+            id="subscribeMessage"
+            class="subscribe-message"
+        ></p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= CONTACT ================= -->
+
+<section class="contact-section" id="contact">
+
+    <div class="section-heading">
+
+        <span>
+            CONTACT
+        </span>
+
+        <h2>
+            Get In Touch
+        </h2>
+
+        <p>
+            Have questions about ShopSmart?
+            Contact us.
+        </p>
+
+    </div>
+
+
+    <div class="contact-info">
+
+        <div class="contact-card">
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <h3>
+                Location
+            </h3>
+
+            <p>
+                Bangalore, India
+            </p>
+
+        </div>
+
+
+        <div class="contact-card">
+
+            <i class="fa-solid fa-phone"></i>
+
+            <h3>
+                Phone
+            </h3>
+
+            <p>
+                +91 7483795008
+            </p>
+
+        </div>
+
+
+        <div class="contact-card">
+
+            <i class="fa-solid fa-envelope"></i>
+
+            <h3>
+                Email
+            </h3>
+
+            <p>
+                priyankapri1821@gmail.com
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <div class="footer-container">
+
+
+        <div class="footer-brand">
+
+            <div class="logo">
+                🛍️ <span>ShopSmart</span>
+            </div>
+
+            <p>
+                AI Powered Product Recommendation System
+                built using Flask, Machine Learning and Python.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="{{ url_for('home') }}">
+                Home
+            </a>
+
+            <a href="{{ url_for('products') }}">
+                Products
+            </a>
+
+            <a href="{{ url_for('categories') }}">
+                Categories
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+            <a href="#contact">
+                Contact
+            </a>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>
+                Categories
+            </h3>
+
+            {% for category in categories %}
+
+            <a
+                href="{{ url_for('category', category_name=category) }}"
+            >
+                {{ category }}
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>
+                Contact
+            </h3>
+
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                Bangalore, India
+            </p>
+
+            <p>
+                <i class="fa-solid fa-phone"></i>
+                +91 7483795008
+            </p>
+
+            <p>
+                <i class="fa-solid fa-envelope"></i>
+                priyankapri1821@gmail.com
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 ShopSmart |
+            AI Product Recommendation System |
+            Flask & Machine Learning
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+
+/* ================= SUBSCRIBE ================= */
+
+function subscribeUser(event) {
+
+    event.preventDefault();
+
+    const email =
+        document.getElementById("emailInput").value;
+
+    const message =
+        document.getElementById("subscribeMessage");
+
+    message.textContent =
+        "Thank you! " +
+        email +
+        " has been subscribed successfully.";
+
+    document.getElementById("emailInput").value = "";
+
+}
+
+
+
+/* ================= AUTOCOMPLETE ================= */
+
+const searchInput =
+    document.getElementById("productSearch");
+
+const autocompleteResults =
+    document.getElementById("autocomplete-results");
+
+
+if (searchInput && autocompleteResults) {
+
+
+    searchInput.addEventListener(
+        "input",
+        function () {
+
+
+            const query =
+                this.value.trim();
+
+
+            if (query.length === 0) {
+
+                autocompleteResults.innerHTML = "";
+
+                autocompleteResults.style.display =
+                    "none";
+
+                return;
+
+            }
+
+
+            fetch(
+                "/api/search?q=" +
+                encodeURIComponent(query)
+            )
+
+
+            .then(function(response) {
+
+                return response.json();
+
+            })
+
+
+            .then(function(data) {
+
+
+                autocompleteResults.innerHTML = "";
+
+
+                if (
+                    !data.products ||
+                    data.products.length === 0
+                ) {
+
+                    autocompleteResults.style.display =
+                        "none";
+
+                    return;
+
+                }
+
+
+                data.products
+                    .slice(0, 8)
+                    .forEach(function(product) {
+
+
+                        const item =
+                            document.createElement("div");
+
+
+                        item.className =
+                            "autocomplete-item";
+
+
+                        item.innerHTML = `
+
+                            <img
+                                src="/static/images/${product.image}"
+                                alt="${product.name}"
+                            >
+
+                            <div class="autocomplete-info">
+
+                                <strong>
+                                    ${product.name}
+                                </strong>
+
+                                <span>
+                                    ${product.category}
+                                </span>
+
+                            </div>
+
+                            <span class="autocomplete-price">
+                                ₹${product.price}
+                            </span>
+
+                        `;
+
+
+                        item.addEventListener(
+                            "click",
+                            function() {
+
+
+                                searchInput.value =
+                                    product.name;
+
+
+                                autocompleteResults.innerHTML =
+                                    "";
+
+
+                                autocompleteResults.style.display =
+                                    "none";
+
+
+                            }
+                        );
+
+
+                        autocompleteResults.appendChild(item);
+
+
+                    });
+
+
+                autocompleteResults.style.display =
+                    "block";
+
+
+            })
+
+
+            .catch(function(error) {
+
+                console.error(
+                    "Search error:",
+                    error
+                );
+
+            });
+
+
+        }
+    );
+
+
+    /* Hide suggestions when clicking outside */
+
+    document.addEventListener(
+        "click",
+        function(event) {
+
+
+            if (
+                !searchInput.contains(event.target) &&
+                !autocompleteResults.contains(event.target)
+            ) {
+
+                autocompleteResults.style.display =
+                    "none";
+
+            }
+
+        }
+    );
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>

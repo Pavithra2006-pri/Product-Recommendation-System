@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>All Products | ShopSmart</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        rel="stylesheet">
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a href="{{ url_for('home') }}"
+           class="logo">
+
+            🛍️ <span>ShopSmart</span>
+
+        </a>
+
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{{ url_for('home') }}">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a class="active"
+                   href="{{ url_for('products') }}">
+                    Products
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('categories') }}">
+                    Categories
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('home') }}#about">
+                    About
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('home') }}#contact">
+                    Contact
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('cart') }}">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    Cart
+
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     PAGE HERO
+===================================================== -->
+
+<section class="page-hero">
+
+    <span>
+        SHOPSMART STORE
+    </span>
+
+    <h1>
+        Explore All Products
+    </h1>
+
+    <p>
+        Search, filter and sort products to find exactly
+        what you're looking for.
+    </p>
+
+</section>
+
+
+<!-- =====================================================
+     PRODUCTS PAGE
+===================================================== -->
+
+<section class="products-page">
+
+
+    <!-- =================================================
+         FILTER PANEL
+    ================================================== -->
+
+    <div class="filter-panel">
+
+
+        <!-- SEARCH -->
+
+        <div class="filter-group search-filter">
+
+            <label for="productSearch">
+                Search Product
+            </label>
+
+            <div class="filter-search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="text"
+                    id="productSearch"
+                    placeholder="Search by product name..."
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- CATEGORY -->
+
+        <div class="filter-group">
+
+            <label for="categoryFilter">
+                Category
+            </label>
+
+            <select id="categoryFilter">
+
+                <option value="all">
+                    All Categories
+                </option>
+
+                {% set category_names = [] %}
+
+                {% for product in products %}
+
+                    {% if product.category not in category_names %}
+
+                        {% set _ = category_names.append(product.category) %}
+
+                        <option value="{{ product.category|lower }}">
+                            {{ product.category }}
+                        </option>
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <!-- PRICE -->
+
+        <div class="filter-group">
+
+            <label for="priceFilter">
+                Maximum Price
+            </label>
+
+            <input
+                type="number"
+                id="priceFilter"
+                min="0"
+                placeholder="₹ Maximum"
+            >
+
+        </div>
+
+
+        <!-- RATING -->
+
+        <div class="filter-group">
+
+            <label for="ratingFilter">
+                Minimum Rating
+            </label>
+
+            <select id="ratingFilter">
+
+                <option value="0">
+                    All Ratings
+                </option>
+
+                <option value="4">
+                    ⭐ 4+ Rating
+                </option>
+
+                <option value="4.5">
+                    ⭐ 4.5+ Rating
+                </option>
+
+                <option value="4.7">
+                    ⭐ 4.7+ Rating
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- SORT -->
+
+        <div class="filter-group">
+
+            <label for="sortFilter">
+                Sort By
+            </label>
+
+            <select id="sortFilter">
+
+                <option value="default">
+                    Recommended
+                </option>
+
+                <option value="price-low">
+                    Price: Low → High
+                </option>
+
+                <option value="price-high">
+                    Price: High → Low
+                </option>
+
+                <option value="rating-high">
+                    Highest Rating
+                </option>
+
+                <option value="name">
+                    Name: A → Z
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         TOOLBAR
+    ================================================== -->
+
+    <div class="products-toolbar">
+
+        <div>
+
+            <strong id="resultCount">
+                {{ products|length }}
+            </strong>
+
+            Products Found
+
+        </div>
+
+
+        <button
+            type="button"
+            class="clear-filter-button"
+            onclick="clearFilters()"
+        >
+
+            <i class="fa-solid fa-rotate-left"></i>
+
+            Clear Filters
+
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         PRODUCT GRID
+    ================================================== -->
+
+    <div
+        class="advanced-product-grid"
+        id="productsGrid"
+    >
+
+        {% for product in products %}
+
+        <article
+            class="advanced-product-card"
+
+            data-name="{{ product.name|lower }}"
+
+            data-category="{{ product.category|lower }}"
+
+            data-price="{{ product.price }}"
+
+            data-rating="{{ product.rating }}"
+        >
+
+
+            <!-- PRODUCT IMAGE -->
+
+            <div class="advanced-product-image">
+
+                <img
+                    src="{{ url_for(
+                        'static',
+                        filename='images/' + product.image
+                    ) }}"
+                    alt="{{ product.name }}"
+                    loading="lazy"
+                >
+
+
+                <span class="floating-category">
+
+                    {{ product.category }}
+
+                </span>
+
+            </div>
+
+
+            <!-- PRODUCT CONTENT -->
+
+            <div class="advanced-product-content">
+
+
+                <h3>
+                    {{ product.name }}
+                </h3>
+
+
+                <p class="advanced-description">
+
+                    {{ product.description }}
+
+                </p>
+
+
+                <!-- RATING -->
+
+                <div class="advanced-rating">
+
+                    {% set rating = product.rating|float %}
+
+                    {% for i in range(5) %}
+
+                        {% if i < rating|int %}
+
+                            <i class="fa-solid fa-star"></i>
+
+                        {% else %}
+
+                            <i class="fa-regular fa-star"></i>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                    <span>
+                        {{ product.rating }}
+                    </span>
+
+                </div>
+
+
+                <!-- PRICE -->
+
+                <div class="advanced-product-price">
+
+                    ₹{{ "%.0f"|format(product.price) }}
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="advanced-product-actions">
+
+
+                    <!-- VIEW DETAILS -->
+
+                    <a
+                        href="{{ url_for(
+                            'product_details',
+                            product_name=product.name
+                        ) }}"
+                        class="advanced-view-button"
+                    >
+
+                        <i class="fa-solid fa-eye"></i>
+
+                        View Details
+
+                    </a>
+
+
+                    <!-- ADD TO CART -->
+
+                    <a
+                        href="{{ url_for(
+                            'add_to_cart',
+                            product_name=product.name
+                        ) }}"
+                        class="advanced-buy-button"
+                    >
+
+                        <i class="fa-solid fa-cart-plus"></i>
+
+                        Add to Cart
+
+                    </a>
+
+
+                </div>
+
+
+                <!-- BUY NOW -->
+
+                <a
+                    href="{{ url_for(
+                        'buy_now',
+                        product_name=product.name
+                    ) }}"
+                    class="buy-category-button"
+                >
+
+                    <i class="fa-solid fa-bolt"></i>
+
+                    Buy Now
+
+                </a>
+
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- =================================================
+         NO RESULTS
+    ================================================== -->
+
+    <div
+        class="no-products"
+        id="noProducts"
+    >
+
+        <div class="no-products-icon">
+            🔍
+        </div>
+
+        <h2>
+            No Products Found
+        </h2>
+
+        <p>
+            Try changing your search or filters.
+        </p>
+
+        <button
+            type="button"
+            onclick="clearFilters()"
+            class="primary-button"
+        >
+            Reset Filters
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div class="footer-container">
+
+
+        <!-- BRAND -->
+
+        <div class="footer-brand">
+
+            <div class="logo">
+
+                🛍️ <span>ShopSmart</span>
+
+            </div>
+
+            <p>
+
+                AI Powered Product Recommendation System
+                built using Flask, Python and Machine Learning.
+
+            </p>
+
+        </div>
+
+
+        <!-- QUICK LINKS -->
+
+        <div class="footer-links">
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="{{ url_for('home') }}">
+                Home
+            </a>
+
+            <a href="{{ url_for('products') }}">
+                Products
+            </a>
+
+            <a href="{{ url_for('categories') }}">
+                Categories
+            </a>
+
+            <a href="{{ url_for('home') }}#about">
+                About
+            </a>
+
+        </div>
+
+
+        <!-- CATEGORIES -->
+
+        <div class="footer-links">
+
+            <h3>
+                Categories
+            </h3>
+
+            {% set shown_categories = [] %}
+
+            {% for product in products %}
+
+                {% if product.category not in shown_categories %}
+
+                    {% set _ = shown_categories.append(product.category) %}
+
+                    <a
+                        href="{{ url_for(
+                            'category',
+                            category_name=product.category
+                        ) }}"
+                    >
+
+                        {{ product.category }}
+
+                    </a>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- CONTACT -->
+
+        <div class="footer-links">
+
+            <h3>
+                Contact
+            </h3>
+
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+
+                Bangalore, India
+
+            </p>
+
+            <p>
+                <i class="fa-solid fa-phone"></i>
+
+                +91 7483795008
+
+            </p>
+
+            <p>
+                <i class="fa-solid fa-envelope"></i>
+
+                priyankapriI82@gmail.com
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 ShopSmart |
+            AI Product Recommendation System
+        </p>
+
+    </div>
+
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+
+const searchInput =
+    document.getElementById(
+        "productSearch"
+    );
+
+
+const categoryFilter =
+    document.getElementById(
+        "categoryFilter"
+    );
+
+
+const priceFilter =
+    document.getElementById(
+        "priceFilter"
+    );
+
+
+const ratingFilter =
+    document.getElementById(
+        "ratingFilter"
+    );
+
+
+const sortFilter =
+    document.getElementById(
+        "sortFilter"
+    );
+
+
+const productsGrid =
+    document.getElementById(
+        "productsGrid"
+    );
+
+
+const resultCount =
+    document.getElementById(
+        "resultCount"
+    );
+
+
+const noProducts =
+    document.getElementById(
+        "noProducts"
+    );
+
+
+/* =====================================================
+   FILTER PRODUCTS
+===================================================== */
+
+function filterProducts() {
+
+    const search =
+        searchInput.value
+        .trim()
+        .toLowerCase();
+
+
+    const category =
+        categoryFilter.value;
+
+
+    const maxPrice =
+        parseFloat(
+            priceFilter.value
+        ) || Infinity;
+
+
+    const minRating =
+        parseFloat(
+            ratingFilter.value
+        ) || 0;
+
+
+    const cards =
+        Array.from(
+            productsGrid.querySelectorAll(
+                ".advanced-product-card"
+            )
+        );
+
+
+    let visibleCards = [];
+
+
+    cards.forEach(
+        function(card) {
+
+            const name =
+                card.dataset.name;
+
+
+            const cardCategory =
+                card.dataset.category;
+
+
+            const price =
+                parseFloat(
+                    card.dataset.price
+                );
+
+
+            const rating =
+                parseFloat(
+                    card.dataset.rating
+                );
+
+
+            const matchesSearch =
+                name.includes(
+                    search
+                );
+
+
+            const matchesCategory =
+                category === "all"
+                ||
+                cardCategory === category;
+
+
+            const matchesPrice =
+                price <= maxPrice;
+
+
+            const matchesRating =
+                rating >= minRating;
+
+
+            const visible =
+                matchesSearch
+                &&
+                matchesCategory
+                &&
+                matchesPrice
+                &&
+                matchesRating;
+
+
+            if (visible) {
+
+                card.style.display =
+                    "flex";
+
+                visibleCards.push(
+                    card
+                );
+
+            } else {
+
+                card.style.display =
+                    "none";
+
+            }
+
+        }
+    );
+
+
+    sortCards(
+        visibleCards
+    );
+
+
+    resultCount.textContent =
+        visibleCards.length;
+
+
+    if (
+        visibleCards.length === 0
+    ) {
+
+        noProducts.style.display =
+            "block";
+
+    } else {
+
+        noProducts.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   SORT PRODUCTS
+===================================================== */
+
+function sortCards(cards) {
+
+    const sortValue =
+        sortFilter.value;
+
+
+    if (
+        sortValue === "default"
+    ) {
+
+        return;
+
+    }
+
+
+    cards.sort(
+        function(a, b) {
+
+
+            if (
+                sortValue === "price-low"
+            ) {
+
+                return (
+                    parseFloat(
+                        a.dataset.price
+                    )
+                    -
+                    parseFloat(
+                        b.dataset.price
+                    )
+                );
+
+            }
+
+
+            if (
+                sortValue === "price-high"
+            ) {
+
+                return (
+                    parseFloat(
+                        b.dataset.price
+                    )
+                    -
+                    parseFloat(
+                        a.dataset.price
+                    )
+                );
+
+            }
+
+
+            if (
+                sortValue === "rating-high"
+            ) {
+
+                return (
+                    parseFloat(
+                        b.dataset.rating
+                    )
+                    -
+                    parseFloat(
+                        a.dataset.rating
+                    )
+                );
+
+            }
+
+
+            if (
+                sortValue === "name"
+            ) {
+
+                return (
+                    a.dataset.name.localeCompare(
+                        b.dataset.name
+                    )
+                );
+
+            }
+
+
+            return 0;
+
+        }
+    );
+
+
+    cards.forEach(
+        function(card) {
+
+            productsGrid.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   CLEAR FILTERS
+===================================================== */
+
+function clearFilters() {
+
+    searchInput.value = "";
+
+    categoryFilter.value =
+        "all";
+
+    priceFilter.value = "";
+
+    ratingFilter.value =
+        "0";
+
+    sortFilter.value =
+        "default";
+
+
+    filterProducts();
+
+}
+
+
+/* =====================================================
+   EVENTS
+===================================================== */
+
+searchInput.addEventListener(
+    "input",
+    filterProducts
+);
+
+
+categoryFilter.addEventListener(
+    "change",
+    filterProducts
+);
+
+
+priceFilter.addEventListener(
+    "input",
+    filterProducts
+);
+
+
+ratingFilter.addEventListener(
+    "change",
+    filterProducts
+);
+
+
+sortFilter.addEventListener(
+    "change",
+    filterProducts
+);
+
+
+/* Initial filtering */
+
+filterProducts();
+
+
+</script>
+
+
+</body>
+
+</html>

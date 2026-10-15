@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>{{ product.name }} | ShopSmart</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        rel="stylesheet"
+    >
+
+</head>
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a
+            href="{{ url_for('home') }}"
+            class="logo"
+        >
+            🛍️ <span>ShopSmart</span>
+        </a>
+
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{{ url_for('home') }}">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('products') }}">
+                    Products
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('categories') }}">
+                    Categories
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('cart') }}">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Cart
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</header>
+
+
+<!-- ================= PRODUCT DETAILS ================= -->
+
+<section class="detail-section">
+
+    <div class="detail-image">
+
+        <img
+            src="{{ url_for(
+                'static',
+                filename='images/' + product.image
+            ) }}"
+            alt="{{ product.name }}"
+        >
+
+    </div>
+
+
+    <div class="detail-info">
+
+        <span class="product-category">
+            {{ product.category }}
+        </span>
+
+        <h1>
+            {{ product.name }}
+        </h1>
+
+        <div class="rating">
+            ⭐ {{ product.rating }}/5
+        </div>
+
+        <h2>
+            ₹{{ "%.0f"|format(product.price) }}
+        </h2>
+
+        <p>
+            {{ product.description }}
+        </p>
+
+
+        <!-- ACTION BUTTONS -->
+
+        <div class="detail-buttons">
+
+            <a
+                href="{{ url_for(
+                    'add_to_cart',
+                    product_name=product.name
+                ) }}"
+                class="primary-button"
+            >
+                <i class="fa-solid fa-cart-plus"></i>
+                Add to Cart
+            </a>
+
+
+            <a
+                href="{{ url_for(
+                    'buy_now',
+                    product_name=product.name
+                ) }}"
+                class="primary-button"
+            >
+                <i class="fa-solid fa-bolt"></i>
+                Buy Now
+            </a>
+
+
+            <a
+                href="{{ url_for('cart') }}"
+                class="secondary-button"
+            >
+                <i class="fa-solid fa-cart-shopping"></i>
+                View Cart
+            </a>
+
+
+            <a
+                href="{{ url_for('home') }}"
+                class="secondary-button"
+            >
+                ← Back Home
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= RECOMMENDATIONS ================= -->
+
+{% if recommendations %}
+
+<section class="products-section">
+
+    <div class="section-heading">
+
+        <span>
+            AI RECOMMENDATION
+        </span>
+
+        <h2>
+            Similar Products
+        </h2>
+
+        <p>
+            Products selected using Machine Learning similarity.
+        </p>
+
+    </div>
+
+
+    <div class="product-grid">
+
+        {% for item in recommendations %}
+
+        <div class="product-card">
+
+            <div class="product-image">
+
+                <img
+                    src="{{ url_for(
+                        'static',
+                        filename='images/' + item.image
+                    ) }}"
+                    alt="{{ item.name }}"
+                >
+
+            </div>
+
+
+            <div class="product-info">
+
+                <span class="product-category">
+                    {{ item.category }}
+                </span>
+
+                <h3>
+                    {{ item.name }}
+                </h3>
+
+                <div class="rating">
+                    ⭐ {{ item.rating }}/5
+                </div>
+
+                <div class="product-bottom">
+
+                    <strong>
+                        ₹{{ "%.0f"|format(item.price) }}
+                    </strong>
+
+                    <a
+                        href="{{ url_for(
+                            'product_details',
+                            product_name=item.name
+                        ) }}"
+                        class="details-button"
+                    >
+                        View Details
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+</body>
+</html>

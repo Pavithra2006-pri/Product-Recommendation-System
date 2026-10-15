@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Search | ShopSmart</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a href="{{ url_for('home') }}"
+           class="logo">
+            🛍️ <span>ShopSmart</span>
+        </a>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{{ url_for('home') }}">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('products') }}">
+                    Products
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('categories') }}">
+                    Categories
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</header>
+
+
+<section class="page-hero">
+
+    <span>
+        SEARCH
+    </span>
+
+    <h1>
+        Search Results
+    </h1>
+
+    <p>
+        Results for "{{ query }}"
+    </p>
+
+</section>
+
+
+<section class="products-section">
+
+    {% if results %}
+
+    <div class="product-grid">
+
+        {% for product in results %}
+
+        <div class="product-card">
+
+            <div class="product-image">
+
+                <img
+                    src="{{ url_for('static', filename='images/' + product.image) }}"
+                    alt="{{ product.name }}"
+                >
+
+            </div>
+
+            <div class="product-info">
+
+                <span class="product-category">
+                    {{ product.category }}
+                </span>
+
+                <h3>
+                    {{ product.name }}
+                </h3>
+
+                <div class="rating">
+                    ⭐ {{ product.rating }}/5
+                </div>
+
+                <div class="product-bottom">
+
+                    <strong>
+                        ₹{{ "%.0f"|format(product.price) }}
+                    </strong>
+
+                    <a
+                        href="{{ url_for('product_details', product_name=product.name) }}"
+                        class="details-button"
+                    >
+                        View Details
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <h2>
+            No products found
+        </h2>
+
+        <p>
+            Try another product name or category.
+        </p>
+
+        <a
+            href="{{ url_for('home') }}"
+            class="primary-button"
+        >
+            Back Home
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+</body>
+</html>

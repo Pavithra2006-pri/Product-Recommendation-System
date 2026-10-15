@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout | ShopSmart</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        rel="stylesheet"
+    >
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            🛍️ <span>ShopSmart</span>
+        </a>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{{ url_for('home') }}">Home</a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('products') }}">Products</a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('categories') }}">Categories</a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('cart') }}">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Cart
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</header>
+
+
+<section class="page-hero">
+
+    <span>
+        CHECKOUT
+    </span>
+
+    <h1>
+        Complete Your Order
+    </h1>
+
+    <p>
+        Enter your details and review your order.
+    </p>
+
+</section>
+
+
+<section class="checkout-page">
+
+    <div class="checkout-layout">
+
+
+        <!-- CUSTOMER DETAILS -->
+
+        <div class="checkout-card">
+
+            <div class="checkout-heading">
+
+                <h2>
+                    Delivery Details
+                </h2>
+
+                <p>
+                    Please enter your information.
+                </p>
+
+            </div>
+
+
+            {% if error %}
+
+            <div class="checkout-error">
+                {{ error }}
+            </div>
+
+            {% endif %}
+
+
+            <form
+                action="{{ url_for('checkout') }}"
+                method="POST"
+            >
+
+                <div class="checkout-field">
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="customer_name"
+                        placeholder="Enter your full name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="checkout-field">
+
+                    <label>
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="checkout-field">
+
+                    <label>
+                        Address
+                    </label>
+
+                    <textarea
+                        name="address"
+                        rows="4"
+                        placeholder="Enter your delivery address"
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <div class="checkout-two-columns">
+
+                    <div class="checkout-field">
+
+                        <label>
+                            City
+                        </label>
+
+                        <input
+                            type="text"
+                            name="city"
+                            placeholder="City"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="checkout-field">
+
+                        <label>
+                            Pincode
+                        </label>
+
+                        <input
+                            type="text"
+                            name="pincode"
+                            placeholder="Pincode"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="place-order-button"
+                >
+
+                    <i class="fa-solid fa-check"></i>
+
+                    Place Order
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- ORDER SUMMARY -->
+
+        <div class="checkout-summary">
+
+            <h2>
+                Order Summary
+            </h2>
+
+
+            {% for item in cart_items %}
+
+            <div class="checkout-item">
+
+                <div class="checkout-item-image">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='images/' + item.image
+                        ) }}"
+                        alt="{{ item.name }}"
+                    >
+
+                </div>
+
+
+                <div class="checkout-item-info">
+
+                    <h3>
+                        {{ item.name }}
+                    </h3>
+
+                    <p>
+                        Qty: {{ item.quantity }}
+                    </p>
+
+                </div>
+
+
+                <strong>
+                    ₹{{ "%.0f"|format(item.item_total) }}
+                </strong>
+
+            </div>
+
+            {% endfor %}
+
+
+            <div class="summary-divider"></div>
+
+
+            <div class="checkout-total-row">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <strong>
+                    ₹{{ "%.0f"|format(subtotal) }}
+                </strong>
+
+            </div>
+
+
+            <div class="checkout-total-row">
+
+                <span>
+                    Delivery
+                </span>
+
+                <span class="free">
+                    FREE
+                </span>
+
+            </div>
+
+
+            <div class="summary-divider"></div>
+
+
+            <div class="checkout-grand-total">
+
+                <span>
+                    Total
+                </span>
+
+                <strong>
+                    ₹{{ "%.0f"|format(subtotal) }}
+                </strong>
+
+            </div>
+
+
+            <div class="checkout-secure">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                Secure Demo Checkout
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 ShopSmart |
+            AI Product Recommendation System
+        </p>
+
+    </div>
+
+</footer>
+
+</body>
+
+</html>

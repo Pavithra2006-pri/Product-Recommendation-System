@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Order Successful | ShopSmart</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        rel="stylesheet"
+    >
+
+</head>
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a
+            href="{{ url_for('home') }}"
+            class="logo"
+        >
+            🛍️ <span>ShopSmart</span>
+        </a>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{{ url_for('home') }}">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('products') }}">
+                    Products
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('categories') }}">
+                    Categories
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('cart') }}">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Cart
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     ORDER SUCCESS
+===================================================== -->
+
+<section class="order-success-page">
+
+    <div class="order-success-card">
+
+
+        <!-- SUCCESS ICON -->
+
+        <div class="order-success-icon">
+
+            <i class="fa-solid fa-check"></i>
+
+        </div>
+
+
+        <span class="success-label">
+            ORDER CONFIRMED
+        </span>
+
+
+        <h1>
+            Thank You, {{ order["customer_name"] }}!
+        </h1>
+
+
+        <p>
+            Your order has been placed successfully.
+        </p>
+
+
+        <!-- =================================================
+             ORDER DETAILS
+        ================================================== -->
+
+        <div class="success-summary">
+
+            <h2>
+                Order Summary
+            </h2>
+
+
+            {% for item in order["items"] %}
+
+            <div class="success-item">
+
+                <div>
+
+                    <strong>
+                        {{ item["name"] }}
+                    </strong>
+
+                    <small>
+                        × {{ item["quantity"] }}
+                    </small>
+
+                </div>
+
+
+                <strong>
+                    ₹{{ "%.0f"|format(item["item_total"]) }}
+                </strong>
+
+            </div>
+
+            {% endfor %}
+
+
+            <div class="summary-divider">
+            </div>
+
+
+            <div class="success-total">
+
+                <span>
+                    Total
+                </span>
+
+                <strong>
+                    ₹{{ "%.0f"|format(order["total"]) }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             DELIVERY DETAILS
+        ================================================== -->
+
+        <div class="delivery-details">
+
+            <h3>
+                <i class="fa-solid fa-location-dot"></i>
+                Delivery Details
+            </h3>
+
+
+            <p>
+                <strong>Name:</strong>
+                {{ order["customer_name"] }}
+            </p>
+
+
+            <p>
+                <strong>Phone:</strong>
+                {{ order["phone"] }}
+            </p>
+
+
+            <p>
+                <strong>Address:</strong>
+                {{ order["address"] }}
+            </p>
+
+
+            <p>
+                <strong>City:</strong>
+                {{ order["city"] }}
+            </p>
+
+
+            <p>
+                <strong>Pincode:</strong>
+                {{ order["pincode"] }}
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             DELIVERY MESSAGE
+        ================================================== -->
+
+        <div class="delivery-message">
+
+            <i class="fa-solid fa-truck"></i>
+
+            Your order will be delivered to
+            {{ order["city"] }}.
+
+        </div>
+
+
+        <!-- =================================================
+             BUTTONS
+        ================================================== -->
+
+        <div class="success-actions">
+
+            <a
+                href="{{ url_for('products') }}"
+                class="primary-button"
+            >
+                <i class="fa-solid fa-bag-shopping"></i>
+                Continue Shopping
+            </a>
+
+
+            <a
+                href="{{ url_for('home') }}"
+                class="secondary-button"
+            >
+                <i class="fa-solid fa-house"></i>
+                Back Home
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 ShopSmart |
+            AI Product Recommendation System
+        </p>
+
+    </div>
+
+</footer>
+
+
+</body>
+</html>
